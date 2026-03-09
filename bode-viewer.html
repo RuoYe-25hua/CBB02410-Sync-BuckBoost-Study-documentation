@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>典型环节 Bode 图</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const ELEMENTS = [
+      {
+        id: "proportional",
+        name: "比例环节",
+        nameEn: "Proportional",
+        tf: "G(s) = K",
+        params: [{ key: "K", label: "K", min: 0.1, max: 20, step: 0.1, default: 2 }],
+        mag: (w, p) => 20 * Math.log10(p.K),
+        phase: (w, p) => 0,
+        desc: "幅频特性为水平线 20lgK，相频特性恒为 0°。",
+      },
+      {
+        id: "integral",
+        name: "积分环节",
+        nameEn: "Integral",
+        tf: "G(s) = 1/(s)",
+        params: [],
+        mag: (w) => -20 * Math.log10(w),
+        phase: () => -90,
+        desc: "幅频特性为斜率 −20dB/dec 的直线，相频恒为 −90°。",
+      },
+      {
+        id: "derivative",
+        name: "微分环节",
+        nameEn: "Derivative",
+        tf: "G(s) = s",
+        params: [],
+        mag: (w) => 20 * Math.log10(w),
+        phase: () => 90,
+        desc: "幅频特性为斜率 +20dB/dec 的直线，相频恒为 +90°。",
+      },
+      {
+        id: "inertia",
+        name: "惯性环节",
+        nameEn: "First-order Lag",
+        tf: "G(s) = 1/(Ts+1)",
+        params: [{ key: "T", label: "T", min: 0.01, max: 10, step: 0.01, default: 1 }],
+        mag: (w, p) => -10 * Math.log10(1 + (w * p.T) ** 2),
+        phase: (w, p) => (-Math.atan(w * p.T) * 180) / Math.PI,
+        desc: "转折频率 ω=1/T，低频段 0dB，高频段 −20dB/dec 渐近。",
+      },
+      {
+        id: "first_order_diff",
+        name: "一阶微分环节",
+        nameEn: "First-order Lead",
+        tf: "G(s) = Ts+1",
+        params: [{ key: "T", label: "T", min: 0.01, max: 10, step: 0.01, default: 1 }],
+        mag: (w, p) => 10 * Math.log10(1 + (w * p.T) ** 2),
+        phase: (w, p) => (Math.atan(w * p.T) * 180) / Math.PI,
+        desc: "转折频率 ω=1/T，低频段 0dB，高频段 +20dB/dec 渐近。",
+      },
+      {
+        id: "oscillation",
+        name: "振荡环节",
+        nameEn: "Second-order",
+        tf: "G(s) = ωn²/(s²+2ζωns+ωn²)",
+        params: [
+          { key: "wn", label: "ωn", min: 0.1, max: 20, step: 0.1, default: 1 },
+          { key: "zeta", label: "ζ", min: 0.05, max: 2, step: 0.01, default: 0.3 },
+        ],
+        mag: (w, p) => {
+          const u = w / p.wn;
+          return -10 * Math.log10((1 - u * u) ** 2 + (2 * p.zeta * u) ** 2);
+        },
+        phase: (w, p) => {
+          const u = w / p.wn;
+          let ph = -Math.atan2(2 * p.zeta * u, 1 - u * u) * 180 / Math.PI;
+          if (ph > 0) ph -= 360;
+          return ph;
+        },
+        desc: "谐振频率附近有谐振峰，ζ 越小峰越高。相位从 0° 趋向 −180°。",
+      },
+      {
+        id: "delay",
+        name: "延迟环节",
+        nameEn: "Time Delay",
+        tf: "G(s) = e^(−τs)",
+        params: [{ key: "tau", label: "τ", min: 0.01, max: 5, step: 0.01, default: 0.5 }],
+        mag: () => 0,
+        phase: (w, p) => (-w * p.tau * 180) / Math.PI,
+        desc: "幅频特性恒为 0dB，相频特性线性下降，斜率与 τ 成正比。",
+      },
+    ];
+
+    function generateFreqs(start, end, n) {
+      const arr = [];
+      const ls = Math.log10(start), le = Math.log10(end);
+      for (let i = 0; i < n; i++) {
+        arr.push(10 ** (ls + (le - ls) * i / (n - 1)));
+      }
+      return arr;
+    }
+
+    function BodePlot({ element, params }) {
+      const freqs = useMemo(() => generateFreqs(0.01, 1000, 500), []);
+      const data = useMemo(() => freqs.map(w => ({
+        w,
+        mag: element.mag(w, params),
+        phase: element.phase(w, params),
+      })), [element, params, freqs]);
+
+      const magMin = Math.min(...data.map(d => d.mag));
+      const magMax = Math.max(...data.map(d => d.mag));
+      const phMin = Math.min(...data.map(d => d.phase));
+      const phMax = Math.max(...data.map(d => d.phase));
+
+      const magRange = magMax - magMin || 40;
+      const phRange = phMax - phMin || 90;
+
+      const magLo = magMin - magRange * 0.15;
+      const magHi = magMax + magRange * 0.15;
+      const phLo = phMin - phRange * 0.15;
+      const phHi = phMax + phRange * 0.15;
+
+      const W = 520, H = 200, pad = { l: 58, r: 16, t: 16, b: 32 };
+      const pw = W - pad.l - pad.r, ph2 = H - pad.t - pad.b;
+
+      const xScale = (w) => pad.l + (Math.log10(w) - Math.log10(0.01)) / (Math.log10(1000) - Math.log10(0.01)) * pw;
+      const yMag = (v) => pad.t + (1 - (v - magLo) / (magHi - magLo)) * ph2;
+      const yPh = (v) => pad.t + (1 - (v - phLo) / (phHi - phLo)) * ph2;
+
+      const magPath = data.map((d, i) => `${i === 0 ? "M" : "L"}${xScale(d.w).toFixed(2)},${yMag(d.mag).toFixed(2)}`).join(" ");
+      const phPath = data.map((d, i) => `${i === 0 ? "M" : "L"}${xScale(d.w).toFixed(2)},${yPh(d.phase).toFixed(2)}`).join(" ");
+
+      const xTicks = [0.01, 0.1, 1, 10, 100, 1000];
+
+      function magTicks() {
+        const step = niceStep(magRange);
+        const ticks = [];
+        let v = Math.ceil(magLo / step) * step;
+        while (v <= magHi) { ticks.push(v); v += step; }
+        return ticks;
+      }
+
+      function phTicks() {
+        const step = niceStep(phRange);
+        const ticks = [];
+        let v = Math.ceil(phLo / step) * step;
+        while (v <= phHi) { ticks.push(v); v += step; }
+        return ticks;
+      }
+
+      function niceStep(range) {
+        const raw = range / 5;
+        const mag = 10 ** Math.floor(Math.log10(raw));
+        const norm = raw / mag;
+        if (norm < 1.5) return mag;
+        if (norm < 3.5) return 2 * mag;
+        if (norm < 7.5) return 5 * mag;
+        return 10 * mag;
+      }
+
+      const gridColor = "#2a2d3a";
+      const textColor = "#8b8fa3";
+
+      return (
+        <div>
+          <div style={{ marginBottom: 4 }}>
+            <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: "block", width: "100%", height: "auto" }}>
+              <rect x={pad.l} y={pad.t} width={pw} height={ph2} fill="#12141e" rx="2" />
+              {xTicks.map(t => (
+                <line key={t} x1={xScale(t)} x2={xScale(t)} y1={pad.t} y2={pad.t + ph2} stroke={gridColor} strokeWidth="0.5" />
+              ))}
+              {magTicks().map(t => (
+                <g key={t}>
+                  <line x1={pad.l} x2={pad.l + pw} y1={yMag(t)} y2={yMag(t)} stroke={gridColor} strokeWidth="0.5" />
+                  <text x={pad.l - 6} y={yMag(t) + 3} fill={textColor} fontSize="9" textAnchor="end" fontFamily="monospace">{t.toFixed(0)}</text>
+                </g>
+              ))}
+              {magLo < 0 && magHi > 0 && (
+                <line x1={pad.l} x2={pad.l + pw} y1={yMag(0)} y2={yMag(0)} stroke="#444" strokeWidth="1" strokeDasharray="4 3" />
+              )}
+              <path d={magPath} fill="none" stroke="#6ee7b7" strokeWidth="2" />
+              <text x={pad.l - 6} y={10} fill={textColor} fontSize="9" textAnchor="end" fontFamily="monospace">dB</text>
+              {xTicks.map(t => (
+                <text key={t} x={xScale(t)} y={H - 6} fill={textColor} fontSize="9" textAnchor="middle" fontFamily="monospace">{t >= 1 ? t : t.toString()}</text>
+              ))}
+              <text x={W / 2} y={H} fill={textColor} fontSize="8" textAnchor="middle" fontFamily="monospace">ω (rad/s)</text>
+            </svg>
+          </div>
+          <div>
+            <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: "block", width: "100%", height: "auto" }}>
+              <rect x={pad.l} y={pad.t} width={pw} height={ph2} fill="#12141e" rx="2" />
+              {xTicks.map(t => (
+                <line key={t} x1={xScale(t)} x2={xScale(t)} y1={pad.t} y2={pad.t + ph2} stroke={gridColor} strokeWidth="0.5" />
+              ))}
+              {phTicks().map(t => (
+                <g key={t}>
+                  <line x1={pad.l} x2={pad.l + pw} y1={yPh(t)} y2={yPh(t)} stroke={gridColor} strokeWidth="0.5" />
+                  <text x={pad.l - 6} y={yPh(t) + 3} fill={textColor} fontSize="9" textAnchor="end" fontFamily="monospace">{t.toFixed(0)}°</text>
+                </g>
+              ))}
+              {phLo < 0 && phHi > 0 && (
+                <line x1={pad.l} x2={pad.l + pw} y1={yPh(0)} y2={yPh(0)} stroke="#444" strokeWidth="1" strokeDasharray="4 3" />
+              )}
+              <path d={phPath} fill="none" stroke="#fbbf24" strokeWidth="2" />
+              {xTicks.map(t => (
+                <text key={t} x={xScale(t)} y={H - 6} fill={textColor} fontSize="9" textAnchor="middle" fontFamily="monospace">{t >= 1 ? t : t.toString()}</text>
+              ))}
+              <text x={W / 2} y={H} fill={textColor} fontSize="8" textAnchor="middle" fontFamily="monospace">ω (rad/s)</text>
+            </svg>
+          </div>
+        </div>
+      );
+    }
+
+    function BodeDiagramViewer() {
+      const [selectedId, setSelectedId] = useState("proportional");
+      const element = ELEMENTS.find(e => e.id === selectedId);
+
+      const initParams = {};
+      element.params.forEach(p => { initParams[p.key] = p.default; });
+      const [params, setParams] = useState(initParams);
+
+      const handleSelect = (id) => {
+        setSelectedId(id);
+        const el = ELEMENTS.find(e => e.id === id);
+        const np = {};
+        el.params.forEach(p => { np[p.key] = p.default; });
+        setParams(np);
+      };
+
+      const handleParam = (key, val) => {
+        setParams(prev => ({ ...prev, [key]: parseFloat(val) }));
+      };
+
+      return (
+        <div style={{
+          minHeight: "100vh",
+          background: "linear-gradient(145deg, #0c0e18 0%, #141726 50%, #0f1120 100%)",
+          color: "#e2e4ed",
+          fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace",
+          padding: "24px 16px",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <h1 style={{
+              fontSize: 22,
+              fontWeight: 700,
+              margin: 0,
+              letterSpacing: "0.04em",
+              background: "linear-gradient(90deg, #6ee7b7, #38bdf8, #a78bfa)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}>
+              典型环节 Bode 图
+            </h1>
+            <p style={{ fontSize: 11, color: "#5a5e74", margin: "6px 0 0" }}>
+              Bode Diagrams of Typical Elements
+            </p>
+          </div>
+
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            justifyContent: "center",
+            marginBottom: 24,
+          }}>
+            {ELEMENTS.map(el => (
+              <button
+                key={el.id}
+                onClick={() => handleSelect(el.id)}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: 6,
+                  border: selectedId === el.id ? "1.5px solid #6ee7b7" : "1px solid #2a2d3a",
+                  background: selectedId === el.id ? "rgba(110,231,183,0.1)" : "rgba(20,23,38,0.7)",
+                  color: selectedId === el.id ? "#6ee7b7" : "#8b8fa3",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontFamily: "inherit",
+                  fontWeight: selectedId === el.id ? 600 : 400,
+                  transition: "all 0.2s",
+                }}
+              >
+                {el.name}
+              </button>
+            ))}
+          </div>
+
+          <div style={{
+            maxWidth: 560,
+            margin: "0 auto 20px",
+            background: "rgba(20,23,38,0.8)",
+            border: "1px solid #2a2d3a",
+            borderRadius: 10,
+            padding: "16px 20px",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: "#c4c8dc" }}>{element.name}</span>
+              <span style={{ fontSize: 11, color: "#5a5e74" }}>{element.nameEn}</span>
+            </div>
+            <div style={{
+              fontSize: 14,
+              color: "#38bdf8",
+              background: "#0c0e18",
+              borderRadius: 6,
+              padding: "8px 12px",
+              marginBottom: 10,
+              letterSpacing: "0.02em",
+            }}>
+              {element.tf}
+            </div>
+            <p style={{ fontSize: 12, color: "#7a7e94", margin: 0, lineHeight: 1.6 }}>{element.desc}</p>
+          </div>
+
+          {element.params.length > 0 && (
+            <div style={{
+              maxWidth: 560,
+              margin: "0 auto 20px",
+              display: "flex",
+              gap: 20,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}>
+              {element.params.map(p => (
+                <div key={p.key} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <label style={{ fontSize: 13, color: "#a78bfa", fontWeight: 600 }}>{p.label}</label>
+                  <input
+                    type="range"
+                    min={p.min}
+                    max={p.max}
+                    step={p.step}
+                    value={params[p.key] ?? p.default}
+                    onChange={e => handleParam(p.key, e.target.value)}
+                    style={{ width: 140, accentColor: "#a78bfa" }}
+                  />
+                  <span style={{
+                    fontSize: 12,
+                    color: "#6ee7b7",
+                    background: "#0c0e18",
+                    padding: "2px 8px",
+                    borderRadius: 4,
+                    minWidth: 40,
+                    textAlign: "center",
+                  }}>
+                    {(params[p.key] ?? p.default).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{
+            maxWidth: 560,
+            margin: "0 auto",
+            background: "rgba(20,23,38,0.8)",
+            border: "1px solid #2a2d3a",
+            borderRadius: 10,
+            padding: "16px 12px",
+          }}>
+            <div style={{ display: "flex", gap: 16, marginBottom: 10, justifyContent: "center" }}>
+              <span style={{ fontSize: 10, color: "#6ee7b7" }}>● 幅频特性 (Magnitude)</span>
+              <span style={{ fontSize: 10, color: "#fbbf24" }}>● 相频特性 (Phase)</span>
+            </div>
+            <BodePlot element={element} params={params} />
+          </div>
+
+          <p style={{ textAlign: "center", fontSize: 9, color: "#3a3d4e", marginTop: 20 }}>
+            横轴为对数频率坐标 ω (rad/s)
+          </p>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<BodeDiagramViewer />, document.getElementById('root'));
+  </script>
+</body>
+</html>
