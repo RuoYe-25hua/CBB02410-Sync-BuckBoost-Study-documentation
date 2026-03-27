@@ -189,17 +189,17 @@
    
    2. 对元件选择进行对比取折中 
    
-10. boost分析也有类似二阶滤波器的情况：	![image-20260209144327737](./Sync buckbost notes_images/img_008.png)
+10. boost分析也有类似二阶滤波器的情况：	![image-20260209144327737](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260209144327737.png)
 
-    因此在此模态实际上ic的波形不是平平的：	![image-20260209144436322](./Sync buckbost notes_images/img_009.png)
+    因此在此模态实际上ic的波形不是平平的：	![image-20260209144436322](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260209144436322.png)
 
     实际上，是此时iL的模型分配给C与R，如果C足够大，那就是只把纹波分配给C，把直流分配给R,如下：
 
-    ![image-20260209144638481](./Sync buckbost notes_images/img_010.png)
+    ![image-20260209144638481](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260209144638481.png)
 
-    ![image-20260209144700635](./Sync buckbost notes_images/img_011.png)
+    ![image-20260209144700635](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260209144700635.png)
 
-    ![image-20260209194605995](./Sync buckbost notes_images/img_012.png)
+    ![image-20260209194605995](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260209194605995.png)
 
     在另外一部分是电容接电阻，0输入响应。呈现指数衰减，所以是绝对值逐渐变小的。
 
@@ -230,7 +230,7 @@
       >
       > ②mosfet：存在寄生二极管使得反接直接导通主电路二极管，反接会烧坏管子
       >
-      > ![image-20260213165623478](./Sync buckbost notes_images/img_013.png)
+      > ![image-20260213165623478](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260213165623478.png)
 
 2. **电流采样电阻：**
 
@@ -347,7 +347,7 @@ D3V3 → [C + L + C 滤波] → A3V3（更干净）
 
 ## 4.3 开发板对应硬件关系：
 
-![开发板关系系统框图](D:\1tongji\A_G_JOB\开发板\CBB02410 BuckBoost\CBB02410 Sync BuckBoost Study documentation\2. BoardAnalysis\开发板关系系统框图.png)
+![3开发板关系系统框图](D:\1tongji\求职\开发板\CBB02410 BuckBoost\CBB02410 Sync BuckBoost Study documentation\2. BoardAnalysis\开发板关系系统框图.png)
 
 # 5. buck变换器控制与仿真模型
 
@@ -511,7 +511,7 @@ D3V3 → [C + L + C 滤波] → A3V3（更干净）
 
 - 闭环控制：**使用负反馈，我不直接给你占空比了，而是给控制量的给定值，控制器利用误差来自己调整占空比是多少**，如图
 
-  ![image-20260317104145883](./Sync buckbost notes_images/img_015.png)
+  ![image-20260317104145883](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260317104145883.png)
 
   Vos目标（给定电压）和实际输出Vos在比较器（圆圈⊗）处做差，得到误差信号 e(t) = Vos目标 - Vos。误差送入控制器（比如PI或PID），控制器将误差转换为占空比 DutyS。占空比送入Buck变换器，Buck根据占空比工作，输出电压Vos。
 
@@ -519,7 +519,7 @@ D3V3 → [C + L + C 滤波] → A3V3（更干净）
 
   **好处：电源大小变化、负载在小范围变化时，反应到Vos上，产生误差，占空比自己跟着变化，输出跟随指定，不用管给多少占空比**
   
-  ![image-20260301195157621](./Sync buckbost notes_images/img_016.png)
+  ![image-20260301195157621](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260301195157621.png)
   
   此图：48Vin 24V给定，PI调节
 
@@ -608,7 +608,7 @@ $$\text{Gain (dB)} = 20\log_{10}\left(\frac{V_{out}}{V_{in}}\right)$$
 
 **20dB/dec** 的含义是：频率每增大10倍（一个decade），增益增加20dB（即幅值放大10倍）。
 
-![SmartSelect_20260318_095112_Samsung Notes](./Sync buckbost notes_images/img_017.jpg)
+![SmartSelect_20260318_095112_Samsung Notes](C:\Users\23227\AppData\Local\Packages\Microsoft.YourPhone_8wekyb3d8bbwe\TempState\medias\SmartSelect_20260318_095112_Samsung Notes.jpg)
 
 ### 一、 控制系统与扰动来源
 
@@ -704,7 +704,7 @@ $$
 $$
 \left| \frac{1}{1 + G(j\omega)} \right| = \frac{1}{|1 + \cos\theta + j\sin\theta|} = \frac{1}{\sqrt{(1+\cos\theta)^2 + \sin^2\theta}} = \frac{1}{\sqrt{2 + 2\cos\theta}}
 $$
-![image-20260317210745453](./Sync buckbost notes_images/img_018.png)
+![image-20260317210745453](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260317210745453.png)
 
 结合上图（幅值随角度 $\theta$ 变化的曲线），我们可以得出极其震撼的结论：
 
@@ -749,7 +749,7 @@ $$
 
 **增益裕度GM：** 在相位穿越频率（相位=-180°时）对应的增益距离0dB的距离。
 
-![image-20260320084038761](./Sync buckbost notes_images/img_019.png)
+![image-20260320084038761](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260320084038761.png)
 
 因为穿越频率在中频段，因此设计良好的控制器，相位滞后一般不会到-180度，此外，当相位裕度满足要求，一般幅值裕度一般也会满足要求。
 
@@ -930,13 +930,13 @@ LC双极点最多造成180°相位滞后。当控制器增益过大时，控制�
 
    4. 点击波特图进行仿真
 
-      ![image-20260315102943951](./Sync buckbost notes_images/img_020.png)
+      ![image-20260315102943951](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260315102943951.png)
 
    5. 点击PID，导入系统辨别的bode图，可以自动调节PID的三个参数。
 
 **易错：要点击估计的bode图按钮，而不是线性化的：**
 
-![image-20260320090958358](./Sync buckbost notes_images/img_021.png)
+![image-20260320090958358](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260320090958358.png)
 
 范围：包括穿越频率即可+起始不要太小（没意义，因为低频段的开环都是水平的）
 
@@ -1036,7 +1036,7 @@ LC双极点最多造成180°相位滞后。当控制器增益过大时，控制�
 
    3. 补偿器设计实践：
    
-      ![image-20260315102650868](./Sync buckbost notes_images/img_022.png)
+      ![image-20260315102650868](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260315102650868.png)
       
       1. 被控对象可以看到低频段趋近于0的时候不是无穷大，有静态误差，使用积分环节。缺点： 积分器虽然不影响高频噪声的抑制，但它会为整个系统带来一个永久性的 **-90°** 相位滞后
       
@@ -1064,13 +1064,13 @@ LC双极点最多造成180°相位滞后。当控制器增益过大时，控制�
 
 ## 6.2 boost电压模式
 
-![4367ce0e17ad2674d96660c558d9c8ff](./Sync buckbost notes_images/img_023.jpg)
+![4367ce0e17ad2674d96660c558d9c8ff](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\9e20f478899dc29eb19741386f9343c8\4367ce0e17ad2674d96660c558d9c8ff.jpg)
 
 **注意：**此处就体现出了主控是G2的好处。如果主控是G1，那么就不满足**误差越大，输出越大，输出越大，误差越小**的原则，是G2的话刚好满足，，就能倒逼系统稳定
 
 输出解析：
 
-![image-20260319083543435](./Sync buckbost notes_images/img_024.png)
+![image-20260319083543435](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260319083543435.png)
 
 1. 为什么不管是开环还是当PID参数中P设置比较大时，开始都会有振荡，原因就是BUCK或者BOOST中有LC回路，如果一开始就加一个比较大的占空比，能量会在L与C中来回倒，最终达到一个平衡的稳定状态。实际电路中不容许发生这样的情况，使用的是软启动，占空比是从0慢慢起来的，就使得L与C的振荡幅度很小。
 
@@ -1078,25 +1078,25 @@ LC双极点最多造成180°相位滞后。当控制器增益过大时，控制�
 
    1. 这是使用1e-8（步长缩短5倍）跑出来的结果：之后电压有出现了振荡，不太合理
 
-      ![image-20260319085723983](./Sync buckbost notes_images/img_025.png)
+      ![image-20260319085723983](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260319085723983.png)
 
    2. 使用ode45试试：选择连续，注意限制步长同时将过零自适应
 
-      ![image-20260319085905252](./Sync buckbost notes_images/img_026.png)
+      ![image-20260319085905252](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260319085905252.png)
 
-      ![image-20260319090017263](./Sync buckbost notes_images/img_027.png)
+      ![image-20260319090017263](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260319090017263.png)
 
       可以看出输出平滑的很多。说明优先更换求解器。
 
 ## 6.3 boost传递函数讲解
 
-![image-20260319094131621](./Sync buckbost notes_images/img_028.png)
+![image-20260319094131621](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260319094131621.png)
 
 ## 6.4 tuner工具自动整定参数
 
 系统辨识结果：
 
-![image-20260320092758653](./Sync buckbost notes_images/img_029.png)
+![image-20260320092758653](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260320092758653.png)
 
 1. 将bode图导入到工作区
 2. 点击pid的调节按钮，将bode图导入
@@ -1120,18 +1120,18 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 2. 开关电源是小惯性环节：
 
-   ![image-20260321080827563](./Sync buckbost notes_images/img_030.png)
+   ![image-20260321080827563](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321080827563.png)
 
    ​	占空比变输出电压也会跟着变，但是因为由储能元件，有一定的惯性，因此输出可以保持在48V稳定：
 
    3. 别忘了0极点：
-   4. ![image-20260321081021909](./Sync buckbost notes_images/img_031.png)
+   4. ![image-20260321081021909](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321081021909.png)
 
 ## 6.6 恒流控制
 
 1. mos管反向二极管 ，导致boost开始就是导通的：
 
-   ![image-20260321085839541](./Sync buckbost notes_images/img_032.png)
+   ![image-20260321085839541](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321085839541.png)
 
 2. 输出电流相较输出电压受占空比的影响更大，因此，为了确保稳定，一般恒流控制的响应比电压控制慢。
 
@@ -1141,7 +1141,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 ## 总结一下讲的各种控制模式：
 
-![image-20260321100249623](./Sync buckbost notes_images/img_033.png)
+![image-20260321100249623](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321100249623.png)
 
 1. 现有控制方式的一些总结：
 
@@ -1173,7 +1173,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    2. 平均电流如何获得：在pwm波形的中心点上升沿，驱动采样保持在该处采样
 
-      ![SmartSelect_20260321_101152_Samsung Notes](./Sync buckbost notes_images/img_034.jpg)
+      ![SmartSelect_20260321_101152_Samsung Notes](C:\Users\23227\AppData\Local\Packages\Microsoft.YourPhone_8wekyb3d8bbwe\TempState\medias\SmartSelect_20260321_101152_Samsung Notes.jpg)
 
    3. 注意点：电压外环输出电感平均电流的给定值要做限幅，确保给定的电流要在线路最大电流里，保证器件的安全。
 
@@ -1181,25 +1181,25 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 ## 7.1 STM32CubeMx软件简介与新建工程
 
-1. STM32CubeMx可以自动生成工程文件代码，包括①配置工程（项目配置![image-20260322112144953](./Sync buckbost notes_images/img_035.png)、库函数、启动文件、时钟树配置等等)②初始化功能模块
+1. STM32CubeMx可以自动生成工程文件代码，包括①配置工程（项目配置![image-20260322112144953](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322112144953.png)、库函数、启动文件、时钟树配置等等)②初始化功能模块
 
 2. 关于创建的一些提醒：
 
    1. 下载好配套库函数、创建工程选择好芯片，打开文件之后先保存文件：
 
-      ![image-20260321112554310](./Sync buckbost notes_images/img_036.png)
+      ![image-20260321112554310](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321112554310.png)
 
    2. 设置项目选项：注意工程的名字是STM32CubeMx文件的名字，本体以及生成keil5文件保存在“Toolchain Folder Location”中，可以根据所在位置自动更改
 
-      ![image-20260322090544983](./Sync buckbost notes_images/img_037.png)
+      ![image-20260322090544983](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322090544983.png)
 
    3. 代码生成的一些选项设置：
 
-      ![image-20260322091148697](./Sync buckbost notes_images/img_038.png)
+      ![image-20260322091148697](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322091148697.png)
 
    4. 高级选项，选择使用什么库编写：
 
-      ![image-20260322102435698](./Sync buckbost notes_images/img_039.png)
+      ![image-20260322102435698](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322102435698.png)
 
       > **HAL库**（Hardware Abstraction Layer）是高层抽象库，API通用性强、跨系列移植方便，但代码体积大、运行效率相对低，适合快速开发和CubeMX配合使用。
       >
@@ -1213,7 +1213,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 3. 如果第一次使用该芯片打开 keil，会让先选择固件包，如果没下载，这样做：
 
-   ![image-20260321120823736](./Sync buckbost notes_images/img_040.png)
+   ![image-20260321120823736](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260321120823736.png)
 
    选择对应的芯片，旁边有个超链接，点击，就可以下载固件包，安装即可，如果发现没法安装：Cannot copy license file to “.Download” folder，就说明keil版本太低，下载低版本的固件包，重新打开文件，就正常了。
 
@@ -1229,17 +1229,17 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 1. 配置烧录口：
 
-   ![image-20260322085230538](./Sync buckbost notes_images/img_041.png)
+   ![image-20260322085230538](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322085230538.png)
 
 2. 时钟树配置：
 
    先配置是否选择外部时钟源
 
-   ![image-20260322085350526](./Sync buckbost notes_images/img_042.png)
+   ![image-20260322085350526](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322085350526.png)
 
    再配置时钟树
 
-   ![image-20260322085104985](./Sync buckbost notes_images/img_043.png)
+   ![image-20260322085104985](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322085104985.png)
 
    时钟来源：外部I内部E，高速H低速L。核心配置为橘色框，分频倍频出来得到各种总线的时钟。这些时钟配置外设时钟（绿色框），黄色框输出时钟，用于拓展外设同步。
 
@@ -1252,7 +1252,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 4. 芯片常用手册：
 
-   ![image-20260322170642696](./Sync buckbost notes_images/img_044.png)
+   ![image-20260322170642696](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322170642696.png)
 
    **常用文档：** **Reference Manuals (1)** 就能找到参考手册（RM0364）。**Product Specifications** 是数据手册（Datasheet），包含引脚定义、电气参数等；**Programming Manuals** 是编程手册，讲Cortex-M4内核指令和寄存器；**Errata Sheets** 是勘误表，记录芯片已知的硬件bug，开发中遇到奇怪问题时值得查看。
 
@@ -1296,7 +1296,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    1. 时钟源只有内部时钟，计数器只能向上计数
 
-   2. ![image-20260322181414682](./Sync buckbost notes_images/img_045.png)
+   2. ![image-20260322181414682](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260322181414682.png)
 
       enable预装载，计数周期结束后再填入新的ARR。主模式—定时器何时发送触发信号：
 
@@ -1310,7 +1310,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    1. 时钟源选择：
 
-      ![727d436eeb64bac87648a3b1091fce02](./Sync buckbost notes_images/img_046.jpg)
+      ![727d436eeb64bac87648a3b1091fce02](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\9e20f478899dc29eb19741386f9343c8\727d436eeb64bac87648a3b1091fce02.jpg)
 
    2. **从模式与主模式：**
 
@@ -1318,7 +1318,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
       从模式类型：
 
-      ![25d9990e8bb50662ec013df182734fa1](./Sync buckbost notes_images/img_047.jpg)
+      ![25d9990e8bb50662ec013df182734fa1](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\9e20f478899dc29eb19741386f9343c8\25d9990e8bb50662ec013df182734fa1.jpg)
 
       - **External Clock Mode 1** — 外部时钟模式1。作为定时器的**计数时钟源**。用于级联；（具体 ITR0 对应哪个定时器，取决于芯片型号）
       - **Reset Mode** — 复位模式。每次收到触发信号时，计数器**清零并重新开始计数**。
@@ -1334,17 +1334,17 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
       **输入捕获：**
 
-      ![6b698175cb8b8c5f428566cfe4dc3f43](./Sync buckbost notes_images/img_048.jpg)
+      ![6b698175cb8b8c5f428566cfe4dc3f43](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\6b698175cb8b8c5f428566cfe4dc3f43.jpg)
 
       注意编码器模式下的极性选择与输入捕获时的极性选择不一样
 
       **输出比较：**
 
-      ![ad148591c98de1377be9b19e332f9f43](./Sync buckbost notes_images/img_049.jpg)
+      ![ad148591c98de1377be9b19e332f9f43](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\9e20f478899dc29eb19741386f9343c8\ad148591c98de1377be9b19e332f9f43.jpg)
 
       PWM的参数：分辨率，占空比，频率
 
-      ![0fe1b7dddef263dcd88fe9a9bb01df6b](./Sync buckbost notes_images/img_050.jpg)
+      ![0fe1b7dddef263dcd88fe9a9bb01df6b](C:\Users\23227\xwechat_files\wxid_007j3uqm24vt22_a9d6\temp\RWTemp\2026-03\9e20f478899dc29eb19741386f9343c8\0fe1b7dddef263dcd88fe9a9bb01df6b.jpg)
 
    4. 定时器中断类型：
 
@@ -1354,36 +1354,17 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
       通用定时器只有一个中断函数，对应全局中断（高级定时器有细分的中断事件以及各自的中断函数）
 
-      ![image-20260324205853429](./Sync buckbost notes_images/img_051.png)
+      ![image-20260324205853429](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260324205853429.png)
+
+      
 
 5. # 高级定时器
 
    输出比较额外还有死区生成+互补输出
 
-## 7.5 DAC
-
-1. 什么时候使用DAC：
-
    
 
-2. DAC讲解
-
-3. 怎么输入，为什么时3000
-
-4. 和通信的区别
-
-5. weak函数
-
-6. 句柄——关于stm32调用函数映射关系
-
-7. 12M
-
-8. 拿示波器测量（学会使用示波器）
-
-
 # 一些感悟经验
-
-1. 开关电源为什么不能在线调式
 
 1. 分析时电源侧的电容不被分析
 
@@ -1429,6 +1410,16 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 1. 穿越频率位于中频段
 
+1. 配置中断：
+
+   ①中断事件使能（软件层面对应一个中断函数，物理层面对应一个连接到NVIC的中断线）
+
+   ![image-20260324215644259](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260324215644259.png)
+
+   ②到NVIC配置中断优先级（先配置中断优先级分组，抢占>响应）
+
+   ③设置中断函数：查找标志位（有的是全局中断，包括细分的多个事件），执行并清除中断标志位
+
 # simulink
 
 1. | 元件            | 名称           | 作用                                             |
@@ -1445,7 +1436,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 # MathCAD
 
-1. ![image-20260315102650868](./Sync buckbost notes_images/img_053.png)
+1. ![image-20260315102650868](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260315102650868.png)
 
    在这张图上，曲线在谐振点之后**确实显示的是正数**（比如在 $1\text{kHz}$ 附近大约是 $+150^\circ$，在 $10\text{kHz}$ 附近大约是 $+100^\circ$）。
 
@@ -1465,27 +1456,3 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    - **突变的那根竖线：** 当真实的物理相位掉到 $-180^\circ$，并且准备继续往下掉（比如变成 $-181^\circ$）时，软件的 `arg()` 函数处理不了小于 $-180^\circ$ 的数。在数学上，$-181^\circ$ 和 $+179^\circ$ 是同一个位置，所以软件**瞬间把画笔从底部拉到了顶部**。（也就是自动加了360°）
    - 因此：**真实物理相位 = 图面显示相位 - $360^\circ$**
-
-# 嵌入式开发
-
-1. 在要检测运行时间的语句前后分别加电平反转信号用来测量，通过测量方波长度来测量代码运行时间
-
-2. HAL为了简便，将很多函数封装到一块，但是实际用到的语句很少，高频开关电源速度很快，为了减少多次判断语句，将语句中需要的寄存器操作提取出来：
-
-   ![image-20260326210614735](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260326210614735.png)
-
-   ![image-20260326210907398](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260326210907398.png)
-
-3. 一种计数的方法：定时后在中断中使用`static`静态变量，从1计数，计数到n，执行操作，相当于定时乘以n。、
-
-4. 配置中断：
-
-   ①中断事件使能（软件层面对应一个中断函数，物理层面对应一个连接到NVIC的中断线）
-
-   ![image-20260324215644259](./Sync buckbost notes_images/img_052.png)
-
-   ②到NVIC配置中断优先级（先配置中断优先级分组，抢占>响应）
-
-   ③设置中断函数：查找标志位（有的是全局中断，包括细分的多个事件），执行中断操作并清除中断标志位
-
-5. 注意：tim的内部时钟指的是时钟源来源于内部时钟总线，但是内部时钟总线可能可能来源于时钟树配置的外部晶振，这并不茅盾：TIM配置里选择"Internal Clock（内部时钟）"时，这个"内部"是相对于定时器本身而言的，意思是定时器使用芯片内部总线送过来的时钟，而不是从TIMx_ETR引脚输入的外部信号。它区分的是定时器的时钟来自总线还是来自外部引脚。
