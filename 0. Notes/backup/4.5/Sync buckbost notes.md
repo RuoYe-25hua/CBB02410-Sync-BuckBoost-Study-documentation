@@ -347,7 +347,7 @@ D3V3 → [C + L + C 滤波] → A3V3（更干净）
 
 ## 4.3 开发板对应硬件关系：
 
-![开发板关系系统框图](D:\1tongji\A_G_JOB\开发板\CBB02410 BuckBoost\CBB02410 Sync BuckBoost Study documentation\2. BoardAnalysis\开发板关系系统框图.png)
+![开发板关系系统框图](./Sync buckbost notes_images/img_014.png)
 
 # 5. buck变换器控制与仿真模型
 
@@ -1064,7 +1064,7 @@ LC双极点最多造成180°相位滞后。当控制器增益过大时，控制�
 
 ## 6.2 boost电压模式
 
-![image-20260405113926133](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260405113926133.png)
+![image-20260405113926133](./Sync buckbost notes_images/img_023.png)
 
 **注意：**此处就体现出了主控是G2的好处。如果主控是G1，那么就不满足**误差越大，输出越大，输出越大，误差越小**的原则，是G2的话刚好满足，，就能倒逼系统稳定
 
@@ -1173,7 +1173,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    2. 平均电流如何获得：在pwm波形的中心点上升沿，驱动采样保持在该处采样
 
-      ![image-20260402205143049](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260402205143049.png)
+      ![image-20260402205143049](./Sync buckbost notes_images/img_034.png)
 
    3. 注意点：电压外环输出电感平均电流的给定值要做限幅，确保给定的电流要在线路最大电流里，保证器件的安全。
 
@@ -1364,7 +1364,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 对应的框图：
 
-![SmartSelect_20260329_104359_Samsung Notes](C:\Users\23227\AppData\Local\Packages\Microsoft.YourPhone_8wekyb3d8bbwe\TempState\medias\SmartSelect_20260329_104359_Samsung Notes.jpg)
+![SmartSelect_20260329_104359_Samsung Notes](./Sync buckbost notes_images/img_052.jpg)
 
 **原理：**触发源决定了何时将DHRx（数据保持寄存器）的值转移到 DORx（数据输出寄存器）中，DOR只要有值，数模转换器立即输出模拟电压。
 
@@ -1432,7 +1432,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    其实本项目可以直接使用USART转USB的模块（江科大方案）就可以实现通信。先转换为了RS232一定程度提高了抗干扰性能。
 
-![image-20260331220227632](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260331220227632.png)
+![image-20260331220227632](./Sync buckbost notes_images/img_053.png)
 
 4. **关键函数：**
 
@@ -1489,9 +1489,9 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 1. HRTIM的结构：
 
-   ![image-20260404090903506](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404090903506.png)
+   ![image-20260404090903506](./Sync buckbost notes_images/img_054.png)
 
-   ![image-20260404090953113](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404090953113.png)
+   ![image-20260404090953113](./Sync buckbost notes_images/img_055.png)
 
    高级定时器是一个计数器配套4个比较/捕获单元，每个控制2路输出，共8路
 
@@ -1549,9 +1549,9 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
       这里要将比较单元的影子寄存器打开，因为不预装的话，运行过程中更改可能会造成控制混乱，因此此刻计算出来的duty，下个控制周期才会起作用**（延时环节的原因）**
 
-      每个周期都更新CCR的值<img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260402223335345.png" alt="image-20260402223335345" style="zoom:50%;" />
+      每个周期都更新CCR的值<img src="./Sync buckbost notes_images/img_063.png" style="zoom:50%;" /> 
 
-      死区插入使能<img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404094424852.png" alt="image-20260404094424852" style="zoom:50%;" />
+      死区插入使能<img src="./Sync buckbost notes_images/img_064.png" style="zoom:50%;" /> 
 
       > 注意：
       > 第二个选项：互补模式，通过定时器内部硬件来生成死区，选择这个同时要配置下方的死区时间。TA1配置好后TA2不用配置，互补生成
@@ -1565,7 +1565,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
       上升以及下降死区的极性（很重要，选错了就会直通，反作用）
 
-      <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404111011566.png" alt="image-20260404111011566" style="zoom:33%;" />
+      <img src="./Sync buckbost notes_images/img_065.png" style="zoom:33%;" />
 
       > ①Rising 和 Falling 死区**不是作用在同一路波形的两个边沿上**，回对占空比产生衰减而是分别保护**两个不同的切换点**，所以两者加起来总死区损失确实是 **5% + 5% = 10%**。
       >
@@ -1573,7 +1573,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    6. 配置TA1通道：
 
-      ![image-20260402225536016](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260402225536016.png)
+      ![image-20260402225536016](./Sync buckbost notes_images/img_056.png)
 
       这4行定义的是 **TA1 输出的置位和复位触发源**，即 PWM 波形的高低电平由什么多少事件，分别是什么时间来控制（不单单是比较器时间，也可以是计数器时间等）。
 
@@ -1601,7 +1601,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    2. 思路：互补模式配置单独死区，独立模式调整比较寄存器值来模拟死区。
 
-      ![image-20260404111028928](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404111028928.png)
+      ![image-20260404111028928](./Sync buckbost notes_images/img_057.png)
 
       没有死区的（①）配置一个比较寄存器，通过两个事件：CNT更新时间与比较器相等时间事件控制两路波形置位置零，现在将**两路下降沿时机提前，上升沿不变**，就是创建两个新比较器，使得触发置零事件提前。
       
@@ -1630,7 +1630,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    HRTIM的中断函数是开关电源控制程序的核心环节。在每个控制周期开始（定时器更新事件）时，会触发中断进入中断函数，其中进行环路计算后，将计算出来的结果放入定时器的比较寄存器中，在下个周期更新，反映到输出PWM波形的占空比变化上，如图：
 
-   <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404134454209.png" alt="image-20260404134454209" style="zoom:50%;" />
+   <img src="./Sync buckbost notes_images/img_066.png" style="zoom:50%;" /> 
 
    要实现以上控制闭环的关键，在于在一个控制周期中能否计算完毕，并将值放入寄存器中，可以通过在中断函数入口与末尾加入gpio电平反转来测量中断时间。
 
@@ -1664,24 +1664,23 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
    采样时间：可配置，采样时间越长，越能避免毛刺干扰，但转换时间也延长。ADC是μs级别的，控制周期也是μs级别的，要注意时间。
 
-5. <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404162036788.png" alt="image-20260404162036788" style="zoom:50%;" />
+5. <img src="./Sync buckbost notes_images/img_067.png" style="zoom:50%;" /> 触发源于DAC相似，都是分为软件触发与硬件触发
 
-   1. 触发源于DAC相似，都是分为软件触发与硬件触发
    2. 注入通道有4个，有4个数据寄存器，一般是中断引起，打断规则组的采样，将转换结果放到注入组采样结果寄存器中，但是规则只有一个寄存器，AD的转换结果需要DMA及时配合转移到别处，不然就会被之后的数据覆盖
 
 **配置实例：配置5个ADC通道，扫描单次模式，HRTIM输出PWM波中点触发扫描一次**
 
-1. <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404171106203.png" alt="image-20260404171106203" style="zoom:67%;" />这里扫描模式点不动的，要在底下规则组参数配置，把通道数改为5，上面自动变为扫描
+1. <img src="./Sync buckbost notes_images/img_068.png" style="zoom:67%;" /> 这里扫描模式点不动的，要在底下规则组参数配置，把通道数改为5，上面自动变为扫描
 
 2. 不需要ADC工作在连续模式，因为每个控制周期都会触发一次ADC采样，可以是直接在HRTIM更新中断中使用软件触发，也可以是通过设置比较寄存器，通过相等事件触发ADC采样**（HRTIM 可直接通过硬件事件触发 ADC 采样，无需 CPU 介入）**
 
-3. ❓RTIM中断后要计算出多个比较寄存器的值是下个周期才会作用到。对于中点采样我有疑惑，采样保持时间选择4.5个ADC时钟，时间：<img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404191910357.png" alt="image-20260404191910357" style="zoom:35%;" />1.18μs），到底是先采样出当前控制周期的平均电流，还是直接使用上个控制周期的采样结果。同时也要注意，要是这样的话，一开始上电，先采样一波有一个采样值，之后进入中断函数，使用ADC采样结果时（进行补偿计算），此时万一到此刻PWM中点了用的是前一刻的还是这一刻的？不如HRTIM进中断进行软件触发采样？？
+3. ❓RTIM中断后要计算出多个比较寄存器的值是下个周期才会作用到。对于中点采样我有疑惑，采样保持时间选择4.5个ADC时钟，时间：<img src="./Sync buckbost notes_images/img_069.png" style="zoom:33%;" />1.18μs），到底是先采样出当前控制周期的平均电流，还是直接使用上个控制周期的采样结果。同时也要注意，要是这样的话，一开始上电，先采样一波有一个采样值，之后进入中断函数，使用ADC采样结果时（进行补偿计算)，此时万一到此刻PWM中点了用的是前一刻的还是这一刻的？不如HRTIM进中断进行软件触发采样？？
 
    怎么考虑时间的先后问题（之后解决)
 
 4. 扫描模式要搭配DMA连续请求，要添加DMA后再配置
 
-   <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404192609886.png" alt="image-20260404192609886" style="zoom:50%;" />
+   ![](./Sync buckbost notes_images/img_070.png) alt="image-20260404192609886" style="zoom:50%;" />
 
 5. 编程思路：
 
@@ -1741,9 +1740,9 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 1. 存储器映像：SRAM/flash/外设寄存器都在一个存储器上，不过不在同一个区间,使用的是同一套地址系统
 
-2. <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260405083203646.png" alt="image-20260405083203646" style="zoom:50%;" />
+2. <img src="./Sync buckbost notes_images/img_071.png" style="zoom:50%;" />
 
-   <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404214348723.png" alt="image-20260404214348723" style="zoom:50%;" />
+   <img src="./Sync buckbost notes_images/img_072.png" style="zoom:50%;" />
 
    
 
@@ -1871,7 +1870,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 # MathCAD
 
-1. ![image-20260315102650868](./Sync buckbost notes_images/img_053.png)
+1. ![image-20260315102650868](./Sync buckbost notes_images/img_022.png)
 
    在这张图上，曲线在谐振点之后**确实显示的是正数**（比如在 $1\text{kHz}$ 附近大约是 $+150^\circ$，在 $10\text{kHz}$ 附近大约是 $+100^\circ$）。
 
@@ -1900,9 +1899,9 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 3. HAL为了简便，将很多函数封装到一块，但是实际用到的语句很少，高频开关电源速度很快，为了减少多次判断语句，将语句中需要的寄存器操作提取出来：
 
-   ![image-20260326210614735](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260326210614735.png)
+   ![image-20260326210614735](./Sync buckbost notes_images/img_059.png)
 
-   ![image-20260326210907398](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260326210907398.png)
+   ![image-20260326210907398](./Sync buckbost notes_images/img_060.png)
 
 4. 一种计数的方法：定时后在中断中使用`static`静态变量，从1计数，计数到n，执行操作，相当于定时乘以n。
 
@@ -1954,13 +1953,13 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 7. 驱动库在这里：
 
-   ![image-20260329112237742](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260329112237742.png)，对应函数声明在.c文件左侧下拉即可看到
+   ![image-20260329112237742](./Sync buckbost notes_images/img_061.png)，对应函数声明在.c文件左侧下拉即可看到
 
 8. 高频开关电源禁止在把控制器加到功率板上调试：断点的加入一个开关管持续导通使得LC持续充电放电，打破了电路的内在平衡，而且过流过压保护的中断也会因为断点二无法进入，失效。
 
 9. cube_Mx把所有的中断函数都放到中断文件里面了，只include了设定了中断的外设，如果中断要使用别的外设，就要先include对应外设的头文件，不然会报错。
 
-10. <img src="C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260404170221210.png" alt="image-20260404170221210" style="zoom:50%;" />注意ADC、UART之类的输入输出就不是简单的GPIO口了，不要在引脚选择的时候选择为简单的GPIO，选择对应的名称，比如ADC_IN。
+10. <img src="./Sync buckbost notes_images/img_073.png" style="zoom:50%;" /> 注意ADC、UART之类的输入输出就不是简单的GPIO口了，不要在引脚选择的时候选择为简单的GPIO，选择对应的名称，比如ADC_IN。
 
 11. ## 单片机开发思维：
 
@@ -2024,7 +2023,7 @@ Boost 电路的输出电压理论公式是 Vo = Vin / (1 - D)。当 D → 1 时�
 
 4. **垂直分辨率（ADC位数）**：示波器接受的是不断变化的模拟电压信号，内部有ADC模块将其转化为数字量。垂直分辨率越大（位数越大），可以观测到的微小变化就越小。举例：你现在CH2设的是100V/格，屏幕大约8格，所以量程大约是±400V共800V的范围。800V ÷ 256 = 每一级约**3.1V**。也就是说，电压变化小于3.1V，ADC根本分辨不出来，全当成同一个值。
 
-5. **阻抗（1MΩ 25pF）**：![image-20260329100630141](C:\Users\23227\AppData\Roaming\Typora\typora-user-images\image-20260329100630141.png)
+5. **阻抗（1MΩ 25pF）**：![image-20260329100630141](./Sync buckbost notes_images/img_062.png)
 
    总的输入阻抗指的是右侧部分的总阻抗，包括探头以及示波器内部的。**（×10相当于探头阻抗变为9，与内部串联变为10，此时测量值示波器内部乘以10)**，总输入阻抗越大，被被测电路内部的压降就越小，测量越准确。
 
